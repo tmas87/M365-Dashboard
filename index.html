@@ -3,24 +3,23 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Microsoft 365 Environment Dashboard</title>
+  <title>M365 Environment Dashboard</title>
   <link rel="stylesheet" href="style.css" />
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-  <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
 </head>
 <body class="light">
 
   <!-- HEADER -->
-  <header class="compact-header">
+  <header class="compact-header blue">
     <div class="header-left">
       <h1>M365 Environment Dashboard</h1>
       <div class="header-info">
-        <div id="lastSync">Last Sync: </div>
-        <div id="location">Location: </div>
-        <div id="healthStatus">Health: OK</div>
+        <span class="tenant">Tenant: tmas87.onmicrosoft.com</span>
+        <span class="sync">Last Sync: <span id="syncTime"></span></span>
+        <span class="location">Location: <span id="location">Loading...</span></span>
       </div>
     </div>
-    <button id="themeToggle" class="theme-toggle" aria-label="Toggle dark/light mode">🌙</button>
+    <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme">🌙</button>
   </header>
 
   <!-- DASHBOARD GRID -->
@@ -31,11 +30,6 @@
     <div class="card orange clickable" id="security"></div>
     <div class="card red clickable" id="conditionalAccess"></div>
     <div class="card grey clickable" id="services"></div>
-    <div class="card purple clickable" id="vulnerabilities"></div>
-    <div class="card teal clickable" id="riskRegister"></div>
-    <div class="card pink clickable" id="patching"></div>
-    <div class="card cyan clickable" id="mailflow"></div>
-    <div class="card lime clickable" id="deviceCompliance"></div>
   </main>
 
   <!-- MODAL -->

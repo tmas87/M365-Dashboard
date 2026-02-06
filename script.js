@@ -125,7 +125,13 @@ document.addEventListener("DOMContentLoaded", async function(){
     {name:"CVE-2026-001", severity:"Critical", system:"Server01", status:"Open"},
     {name:"CVE-2026-002", severity:"High", system:"PC-42", status:"Open"},
     {name:"CVE-2026-003", severity:"Medium", system:"Server02", status:"Open"},
+    {name:"CVE-2026-004", severity:"Low", system:"PC-11", status:"Open"},
+    {name:"CVE-2026-005", severity:"High", system:"Server03", status:"Open"}
   ];
+
+  // Count by severity
+  const severityCounts = {Critical:0, High:0, Medium:0, Low:0};
+  vulnerabilitiesData.forEach(v => { severityCounts[v.severity]++; });
 
   document.getElementById("vulnerabilities").innerHTML = `
     <h3><i class="fas fa-bug"></i> Vulnerabilities</h3>
@@ -134,8 +140,24 @@ document.addEventListener("DOMContentLoaded", async function(){
 
   const vulnChart = new Chart(document.getElementById("vulnChart"),{
     type:"bar",
-    data:{labels:["Critical","High","Medium","Low"], datasets:[{data:[1,1,1,0], backgroundColor:"#a80000"}]},
-    options:{plugins:{legend:{display:false}}, maintainAspectRatio:true, aspectRatio:1}
+    data:{
+      labels:["Critical","High","Medium","Low"],
+      datasets:[{
+        data:[
+          severityCounts.Critical,
+          severityCounts.High,
+          severityCounts.Medium,
+          severityCounts.Low
+        ],
+        backgroundColor:["#a80000","#d83b01","#ffaa00","#107c10"]
+      }]
+    },
+    options:{
+      plugins:{legend:{display:false}},
+      maintainAspectRatio:true,
+      aspectRatio:1,
+      scales:{ y:{ beginAtZero:true, ticks:{ stepSize:1 } } }
+    }
   });
 
   // ======== RISK REGISTER ========
@@ -163,7 +185,6 @@ document.addEventListener("DOMContentLoaded", async function(){
     </div>
     <button id="patchOptions">More Options</button>
   `;
-
   document.getElementById("patchOptions").addEventListener("click",()=>alert("Open Patching Options"));
 
   // ======== MAILFLOW ========
@@ -197,10 +218,7 @@ document.addEventListener("DOMContentLoaded", async function(){
   });
 
   modalClose.addEventListener("click",()=>{ modal.style.display="none"; });
-
-  window.addEventListener("click",(e)=>{
-    if(e.target==modal){ modal.style.display="none"; }
-  });
+  window.addEventListener("click",(e)=>{ if(e.target==modal){ modal.style.display="none"; } });
 
   // ======== THEME TOGGLE ========
   const themeToggle = document.getElementById("themeToggle");

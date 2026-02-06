@@ -2,127 +2,50 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>M365 Environment Dashboard</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Microsoft 365 Environment Dashboard</title>
   <link rel="stylesheet" href="style.css" />
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
 </head>
-
 <body class="light">
 
-<header class="card header-card blue compact-header">
-  <div class="header-left">
-    <h1>M365 Environment Dashboard</h1>
-    <p class="tenant">tmas87.onmicrosoft.com</p>
+  <!-- HEADER -->
+  <header class="compact-header">
+    <div class="header-left">
+      <h1>M365 Environment Dashboard</h1>
+      <div class="header-info">
+        <div id="lastSync">Last Sync: </div>
+        <div id="location">Location: </div>
+        <div id="healthStatus">Health: OK</div>
+      </div>
+    </div>
+    <button id="themeToggle" class="theme-toggle" aria-label="Toggle dark/light mode">🌙</button>
+  </header>
 
-    <div class="header-info">
-      <div class="mini">🟢 Sync: Healthy</div>
-      <div class="mini" id="time"></div>
-      <div class="mini" id="location">Detecting location…</div>
+  <!-- DASHBOARD GRID -->
+  <main class="grid">
+    <div class="card grey clickable" id="tenant"></div>
+    <div class="card blue clickable" id="users"></div>
+    <div class="card green clickable" id="licenses"></div>
+    <div class="card orange clickable" id="security"></div>
+    <div class="card red clickable" id="conditionalAccess"></div>
+    <div class="card grey clickable" id="services"></div>
+    <div class="card purple clickable" id="vulnerabilities"></div>
+    <div class="card teal clickable" id="riskRegister"></div>
+    <div class="card pink clickable" id="patching"></div>
+    <div class="card cyan clickable" id="mailflow"></div>
+    <div class="card lime clickable" id="deviceCompliance"></div>
+  </main>
+
+  <!-- MODAL -->
+  <div id="modal" class="modal">
+    <div class="modal-content">
+      <span id="modalClose" class="modal-close">&times;</span>
+      <div id="modalBody"></div>
     </div>
   </div>
 
-  <button class="theme-toggle" onclick="toggleTheme()" title="Toggle Dark / Light">
-    🌙 / ☀️
-  </button>
-</header>
-
-<section class="dashboard">
-
-  <div class="card blue" onclick="openModal('licensesModal')">
-    <h2>Licensing</h2>
-    <canvas id="licenseChart"></canvas>
-    <div class="info">
-      <span>E3: 60%</span>
-      <span>E5: 40%</span>
-    </div>
-  </div>
-
-  <div class="card green" onclick="openModal('usersModal')">
-    <h2>Users</h2>
-    <canvas id="usersChart"></canvas>
-    <div class="info">
-      <span>Online: 120</span>
-      <span>Offline: 30</span>
-    </div>
-  </div>
-
-  <div class="card orange" onclick="openModal('securityModal')">
-    <h2>Security</h2>
-    <canvas id="securityChart"></canvas>
-    <div class="info">
-      <span>Secure: 85%</span>
-      <span>At Risk: 15%</span>
-    </div>
-  </div>
-
-  <div class="card red" onclick="openModal('riskModal')">
-    <h2>Risk Register</h2>
-    <canvas id="riskChart"></canvas>
-    <div class="info">
-      <span>High: 3</span>
-      <span>Medium: 7</span>
-    </div>
-  </div>
-
-  <div class="card blue">
-    <h2>Devices</h2>
-    <div class="info">
-      <span>Compliant: 92%</span>
-      <span>Non-Compliant: 8%</span>
-    </div>
-  </div>
-
-  <div class="card green">
-    <h2>Mail Flow</h2>
-    <div class="info">
-      <span>Inbound OK</span>
-      <span>No Issues</span>
-    </div>
-  </div>
-
-</section>
-
-<!-- MODALS -->
-
-<div class="modal" id="licensesModal">
-  <div class="modal-content">
-    <span class="close" onclick="closeModal('licensesModal')">×</span>
-    <h2>License Details</h2>
-    <p>E3: 90 users</p>
-    <p>E5: 60 users</p>
-    <button>Assign License</button>
-  </div>
-</div>
-
-<div class="modal" id="usersModal">
-  <div class="modal-content">
-    <span class="close" onclick="closeModal('usersModal')">×</span>
-    <h2>User Status</h2>
-    <p>Online: 120</p>
-    <p>Offline: 30</p>
-    <p>Disabled: 5</p>
-  </div>
-</div>
-
-<div class="modal" id="securityModal">
-  <div class="modal-content">
-    <span class="close" onclick="closeModal('securityModal')">×</span>
-    <h2>Security Posture</h2>
-    <p>MFA Enabled: 85%</p>
-    <p>Risky Sign-ins: 6</p>
-  </div>
-</div>
-
-<div class="modal" id="riskModal">
-  <div class="modal-content">
-    <span class="close" onclick="closeModal('riskModal')">×</span>
-    <h2>Risk Register</h2>
-    <p>Critical: 1</p>
-    <p>High: 3</p>
-    <p>Medium: 7</p>
-  </div>
-</div>
-
-<script src="script.js"></script>
+  <script src="script.js"></script>
 </body>
 </html>

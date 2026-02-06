@@ -1,213 +1,223 @@
-// ======== THEME TOGGLE ========
-const themeBtn = document.getElementById("themeToggle");
-themeBtn.addEventListener("click", () => {
-  document.body.classList.toggle("dark");
-  document.body.classList.toggle("light");
+// ==================== HEADER ====================
+async function updateHeader() {
+  const now = new Date().toLocaleString();
+  document.getElementById("lastSync").textContent = `Last Sync: ${now}`;
+
+  let locationText = "Unavailable";
+  try {
+    const res = await fetch('https://ipapi.co/json/');
+    const data = await res.json();
+    locationText = `${data.city}, ${data.country_name}`;
+  } catch(e){ console.log("Location fetch failed", e); }
+  document.getElementById("location").textContent = `Location: ${locationText}`;
+}
+updateHeader();
+
+// ==================== TENANT CARD ====================
+document.getElementById("tenant").innerHTML = `
+<h3><i class="fas fa-building"></i> Tenant Info</h3>
+<p>tmas87.onmicrosoft.com</p>
+<div class="mini-row">
+  <div class="mini"><i class="fas fa-circle text-green"></i> Active</div>
+  <div class="mini"><i class="fas fa-users"></i> 120 Users</div>
+  <div class="mini"><i class="fas fa-server"></i> 4 Services</div>
+</div>`;
+
+// ==================== USERS CARD ====================
+document.getElementById("users").innerHTML = `
+<h3><i class="fas fa-users"></i> Users</h3>
+<div class="mini-row">
+  <div class="mini"><i class="fas fa-circle text-green"></i> Online: 84</div>
+  <div class="mini"><i class="fas fa-circle text-red"></i> Offline: 36</div>
+  <div class="mini">Guests: 10</div>
+</div>
+<div class="chart-container"><canvas id="usersChart"></canvas></div>
+<p>Total Users: 120</p>
+`;
+
+new Chart(document.getElementById("usersChart"),{
+  type:"doughnut",
+  data:{labels:["Online","Offline"], datasets:[{data:[84,36], backgroundColor:["#107c10","#a80000"]}]},
+  options:{plugins:{legend:{display:false}}, maintainAspectRatio:true, aspectRatio:1}
 });
 
-// ======== MODAL ========
-const modal = document.getElementById("modal");
-const modalBody = document.getElementById("modalBody");
-const modalClose = document.getElementById("modalClose");
-modalClose.addEventListener("click", () => { modal.style.display = "none"; });
-function openModal(title, content) {
-  modalBody.innerHTML = `<h2>${title}</h2>${content}`;
-  modal.style.display = "block";
+// ==================== LICENSES CARD ====================
+document.getElementById("licenses").innerHTML = `
+<h3><i class="fas fa-id-badge"></i> Licensing</h3>
+<div class="chart-container"><canvas id="licenseChart"></canvas></div>
+<div class="mini-row">
+  <div class="mini" id="bp">Business Premium: 60</div>
+  <div class="mini" id="e3">E3: 38</div>
+  <div class="mini" id="ua">Unassigned: 22</div>
+</div>
+<button onclick="assignLicense('Business Premium',1)">Assign BP</button>
+<button onclick="assignLicense('E3',1)">Assign E3</button>
+`;
+
+const licenseChart = new Chart(document.getElementById("licenseChart"),{
+  type:"doughnut",
+  data:{labels:["Business Premium","E3","Unassigned"], datasets:[{data:[60,38,22], backgroundColor:["#0078d4","#107c10","#d83b01"]}]},
+  options:{plugins:{legend:{display:false}}, maintainAspectRatio:true, aspectRatio:1}
+});
+
+function assignLicense(type, amount=1){
+  let bp = parseInt(document.getElementById("bp").textContent.split(":")[1]);
+  let e3 = parseInt(document.getElementById("e3").textContent.split(":")[1]);
+  let ua = parseInt(document.getElementById("ua").textContent.split(":")[1]);
+
+  if(type==="Business Premium"){ bp+=amount; ua-=amount; }
+  if(type==="E3"){ e3+=amount; ua-=amount; }
+
+  document.getElementById("bp").textContent = `Business Premium: ${bp}`;
+  document.getElementById("e3").textContent = `E3: ${e3}`;
+  document.getElementById("ua").textContent = `Unassigned: ${ua}`;
+
+  licenseChart.data.datasets[0].data = [bp,e3,ua];
+  licenseChart.update();
 }
 
-// ======== SYNC TIME ========
-document.getElementById("syncTime").innerText = new Date().toLocaleString();
+// ==================== SECURITY CARD ====================
+document.getElementById("security").innerHTML = `
+<h3><i class="fas fa-shield-alt"></i> Security</h3>
+<div class="chart-container"><canvas id="securityChart"></canvas></div>
+<div class="mini-row">
+  <div class="mini">MFA Enabled: 92%</div>
+  <div class="mini">Admin MFA: 100%</div>
+  <div class="mini">Risky Sign-ins: 5</div>
+  <div class="mini">Blocked Sign-ins: 2</div>
+</div>
+<button onclick="alert('Run Security Report')">Run Report</button>
+`;
 
-// ======== LOCATION ========
-navigator.geolocation.getCurrentPosition(
-  pos => {
-    fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${pos.coords.latitude}&lon=${pos.coords.longitude}`)
-      .then(r => r.json())
-      .then(data => { document.getElementById("location").innerText = data.display_name; });
-  },
-  err => { document.getElementById("location").innerText = "Unavailable"; }
-);
+new Chart(document.getElementById("securityChart"),{
+  type:"doughnut",
+  data:{labels:["MFA Enabled","No MFA"], datasets:[{data:[92,8], backgroundColor:["#107c10","#a80000"]}]},
+  options:{plugins:{legend:{display:false}}, maintainAspectRatio:true, aspectRatio:1}
+});
 
-// ======== DEMO DATA ========
-const data = {
-  tenant: { name: "tmas87.onmicrosoft.com", users: 150, licensed: 130, guests: 20 },
-  users: { total: 150, licensed: 130, guests: 20 },
-  licenses: { businessPremium: 80, e3: 60, unassigned: 10 },
-  security: { mfaEnabledPercent: 85, adminMfa: 100, riskySignins: 6 },
-  conditionalAccess: { policiesEnabled: 12, reportOnly: 3, lastRiskySignin: "2026-02-05 14:15" },
-  services: { exchange: "Healthy", sharepoint: "Healthy", teams: "Warning", onedrive: "Healthy" },
-  patching: { deployed: 10, pending: 3 },
-  mailflow: { delivered: 1200, failed: 45, pending: 30 },
-  devices: { compliant: 95, nonCompliant: 15 }
-};
+// ==================== CONDITIONAL ACCESS ====================
+document.getElementById("conditionalAccess").innerHTML = `
+<h3><i class="fas fa-lock"></i> Conditional Access</h3>
+<div class="mini-row">
+  <div class="mini">Enabled Policies: 5</div>
+  <div class="mini">Report-only: 2</div>
+  <div class="mini">Last Risky Sign-in: 2026-02-05</div>
+</div>`;
 
-// ======== HELPER: DONUT CHART ========
-function createDonutChart(id, labels, values, colors) {
-  const canvas = document.createElement("canvas");
-  canvas.id = `${id}-chart`;
-  const ctx = canvas.getContext("2d");
-  new Chart(ctx, {
-    type: "doughnut",
-    data: { labels: labels, datasets: [{ data: values, backgroundColor: colors }] },
-    options: { plugins: { legend: { display: false } }, responsive: true, maintainAspectRatio: false }
-  });
-  return canvas;
+// ==================== SERVICES ====================
+document.getElementById("services").innerHTML = `
+<h3><i class="fas fa-server"></i> Service Health</h3>
+<div class="mini-row">
+  <div class="mini"><i class="fas fa-envelope"></i> Exchange ✔</div>
+  <div class="mini"><i class="fas fa-comments"></i> Teams ✔</div>
+  <div class="mini"><i class="fas fa-share-square"></i> SharePoint ✔</div>
+  <div class="mini"><i class="fas fa-cloud"></i> OneDrive ✔</div>
+</div>`;
+
+// ==================== VULNERABILITIES ====================
+let vulnerabilitiesData = [
+  {name:"CVE-2026-001", severity:"Critical", system:"Server01", status:"Open"},
+  {name:"CVE-2026-002", severity:"High", system:"PC-42", status:"Open"},
+  {name:"CVE-2026-003", severity:"Medium", system:"Server02", status:"Open"},
+];
+
+document.getElementById("vulnerabilities").innerHTML = `
+<h3><i class="fas fa-bug"></i> Vulnerabilities</h3>
+<div class="chart-container"><canvas id="vulnChart"></canvas></div>
+`;
+
+const vulnChart = new Chart(document.getElementById("vulnChart"),{
+  type:"bar",
+  data:{labels:["Critical","High","Medium","Low"], datasets:[{data:[0,0,0,0], backgroundColor:"#a80000"}]},
+  options:{plugins:{legend:{display:false}}, maintainAspectRatio:true, aspectRatio:1}
+});
+
+function updateVulnChart(){
+  const counts={Critical:0,High:0,Medium:0,Low:0};
+  vulnerabilitiesData.forEach(v=>{ if(v.status!=="Resolved") counts[v.severity]++; });
+  vulnChart.data.datasets[0].data=[counts.Critical,counts.High,counts.Medium,counts.Low];
+  vulnChart.update();
+}
+updateVulnChart();
+
+function markVulnResolved(i){
+  vulnerabilitiesData[i].status="Resolved";
+  document.getElementById(`vuln-status-${i}`).textContent="Resolved";
+  updateVulnChart();
 }
 
-// ======== HELPER: MINI INFO BLOCKS ========
-function createMiniInfo(items) {
-  const div = document.createElement("div");
-  div.className = "mini-info";
-  items.forEach(i => {
-    const block = document.createElement("div");
-    block.innerHTML = `<strong>${i.label}</strong><br>${i.value}`;
-    div.appendChild(block);
-  });
-  return div;
-}
+// ==================== RISK REGISTER ====================
+let riskData = [
+  {risk:"Data Breach", severity:"High", owner:"IT Sec", status:"Open"},
+  {risk:"Phishing Attack", severity:"Medium", owner:"Helpdesk", status:"Open"},
+  {risk:"Unauthorized Access", severity:"Low", owner:"Admin", status:"Open"},
+];
 
-// ======== CARDS POPULATION FUNCTION ========
-function initCard(id, title, chartLabels, chartValues, chartColors, miniItems, modalContent) {
-  const card = document.getElementById(id);
-  card.innerHTML = `<h3>${title}</h3><div class="chart-container"></div>`;
-  card.querySelector(".chart-container").appendChild(
-    createDonutChart(id, chartLabels, chartValues, chartColors)
-  );
-  card.appendChild(createMiniInfo(miniItems));
-  card.addEventListener("click", () => openModal(title, modalContent));
-}
+document.getElementById("riskRegister").innerHTML = `
+<h3><i class="fas fa-exclamation-triangle"></i> Risk Register</h3>
+<div class="mini-row">
+  <div class="mini text-red">High: ${riskData.filter(r=>r.severity==="High").length}</div>
+  <div class="mini text-orange">Medium: ${riskData.filter(r=>r.severity==="Medium").length}</div>
+  <div class="mini text-green">Low: ${riskData.filter(r=>r.severity==="Low").length}</div>
+</div>`;
 
-// ======== EXISTING CARDS ========
+// ==================== PATCHING ====================
+document.getElementById("patching").innerHTML = `
+<h3><i class="fas fa-tools"></i> Patching</h3>
+<div class="mini-row">
+  <div class="mini">Servers compliant: 92%</div>
+  <div class="mini">Endpoints compliant: 88%</div>
+</div>
+<button onclick="alert('Open Patching Options')">More Options</button>`;
 
-// Tenant card
-initCard(
-  "tenant","Tenant Overview",
-  ["Licensed","Guests","Unassigned"],
-  [data.tenant.licensed,data.tenant.guests,data.tenant.users - data.tenant.licensed - data.tenant.guests],
-  ["#0078d4","#d83b01","#666"],
-  [
-    {label:"Total Users", value:data.tenant.users},
-    {label:"Licensed", value:data.tenant.licensed},
-    {label:"Guests", value:data.tenant.guests}
-  ],
-  `<p>Tenant: ${data.tenant.name}</p><p>Total Users: ${data.tenant.users}</p>`
-);
+// ==================== MAILFLOW ====================
+document.getElementById("mailflow").innerHTML = `
+<h3><i class="fas fa-envelope"></i> Mail Flow</h3>
+<div class="mini-row">
+  <div class="mini">Inbound: OK</div>
+  <div class="mini">Outbound: OK</div>
+</div>`;
 
-// Users
-initCard(
-  "users","Users",
-  ["Licensed","Guests","Unassigned"],
-  [data.users.licensed,data.users.guests,data.users.total - data.users.licensed - data.users.guests],
-  ["#107c10","#d83b01","#666"],
-  [
-    {label:"Total Users", value:data.users.total},
-    {label:"Licensed", value:data.users.licensed},
-    {label:"Guests", value:data.users.guests}
-  ],
-  `<p>Total: ${data.users.total}<br>Licensed: ${data.users.licensed}<br>Guests: ${data.users.guests}</p>`
-);
+// ==================== DEVICE COMPLIANCE ====================
+document.getElementById("deviceCompliance").innerHTML = `
+<h3><i class="fas fa-mobile-alt"></i> Device Compliance</h3>
+<div class="mini-row">
+  <div class="mini text-green">Compliant: 102</div>
+  <div class="mini text-red">Non-compliant: 18</div>
+</div>`;
 
-// Licenses
-initCard(
-  "licenses","Licenses",
-  ["Business Premium","E3","Unassigned"],
-  [data.licenses.businessPremium,data.licenses.e3,data.licenses.unassigned],
-  ["#0078d4","#107c10","#666"],
-  [
-    {label:"Business Premium", value:data.licenses.businessPremium},
-    {label:"E3", value:data.licenses.e3},
-    {label:"Unassigned", value:data.licenses.unassigned}
-  ],
-  `<button onclick="alert('Assign License')">Assign License</button>`
-);
+// ==================== MODAL & CLICKABLE ====================
+const modal=document.getElementById("modal");
+const modalBody=document.getElementById("modalBody");
 
-// Security
-initCard(
-  "security","Security",
-  ["MFA Enabled","Admin MFA","Risky Sign-ins"],
-  [data.security.mfaEnabledPercent,data.security.adminMfa,data.security.riskySignins],
-  ["#d83b01","#a80000","#666"],
-  [
-    {label:"MFA %", value:data.security.mfaEnabledPercent},
-    {label:"Admin MFA", value:data.security.adminMfa},
-    {label:"Risky Sign-ins", value:data.security.riskySignins}
-  ],
-  `<p>MFA Enabled: ${data.security.mfaEnabledPercent}%<br>Admin MFA: ${data.security.adminMfa}<br>Risky Sign-ins: ${data.security.riskySignins}</p>`
-);
-
-// Conditional Access
-initCard(
-  "conditionalAccess","Conditional Access",
-  ["Enabled Policies","Report-only"],
-  [data.conditionalAccess.policiesEnabled,data.conditionalAccess.reportOnly],
-  ["#0078d4","#666"],
-  [
-    {label:"Enabled", value:data.conditionalAccess.policiesEnabled},
-    {label:"Report-only", value:data.conditionalAccess.reportOnly}
-  ],
-  `<p>Last Risky Sign-in: ${data.conditionalAccess.lastRiskySignin}</p>`
-);
-
-// Service Health
-initCard(
-  "services","Service Health",
-  ["Healthy","Warning","Issues"],
-  [3,1,0],
-  ["#107c10","#d83b01","#a80000"],
-  [
-    {label:"Exchange", value:data.services.exchange},
-    {label:"Teams", value:data.services.teams},
-    {label:"OneDrive", value:data.services.onedrive}
-  ],
-  `<p>Service health overview</p>`
-);
-
-// ======== NEW CARDS ========
-
-// Patching Card
-const patchCard = document.createElement("div");
-patchCard.className = "card orange clickable";
-patchCard.innerHTML = "<h3>Patching</h3><div class='chart-container'></div>";
-patchCard.querySelector(".chart-container").appendChild(
-  createDonutChart("patch", ["Deployed","Pending"], [data.patching.deployed, data.patching.pending], ["#107c10","#d83b01"])
-);
-patchCard.appendChild(createMiniInfo([
-  {label:"Deployed", value:data.patching.deployed},
-  {label:"Pending", value:data.patching.pending}
-]));
-patchCard.addEventListener("click", () => openModal("Patching Options", `
-  <p>Latest Patch: Feb 5, 2026</p>
-  <button onclick="alert('Deploy Patch')">Deploy Patch</button>
-  <button onclick="alert('Schedule Patch')">Schedule Patch</button>
-  <button onclick="alert('View Patch History')">View Patch History</button>
-`));
-document.querySelector(".grid").appendChild(patchCard);
-
-// Mailflow Card
-const mailCard = document.createElement("div");
-mailCard.className = "card blue clickable";
-mailCard.innerHTML = "<h3>Mailflow</h3><div class='chart-container'></div>";
-mailCard.querySelector(".chart-container").appendChild(
-  createDonutChart("mailflow", ["Delivered","Failed","Pending"], [data.mailflow.delivered,data.mailflow.failed,data.mailflow.pending], ["#107c10","#a80000","#d83b01"])
-);
-mailCard.appendChild(createMiniInfo([
-  {label:"Delivered", value:data.mailflow.delivered},
-  {label:"Failed", value:data.mailflow.failed},
-  {label:"Pending", value:data.mailflow.pending}
-]));
-mailCard.addEventListener("click", () => openModal("Mailflow Details", `<p>Email traffic overview</p>`));
-document.querySelector(".grid").appendChild(mailCard);
-
-// Device Compliance Card
-const deviceCard = document.createElement("div");
-deviceCard.className = "card green clickable";
-deviceCard.innerHTML = "<h3>Device Compliance</h3><div class='chart-container'></div>";
-deviceCard.querySelector(".chart-container").appendChild(
-  createDonutChart("devices", ["Compliant","Non-Compliant"], [data.devices.compliant,data.devices.nonCompliant], ["#107c10","#a80000"])
-);
-deviceCard.appendChild(createMiniInfo([
-  {label:"Compliant", value:data.devices.compliant},
-  {label:"Non-Compliant", value:data.devices.nonCompliant}
-]));
-deviceCard.addEventListener("click", () => openModal("Device Compliance Details", `<p>Device compliance summary</p>`));
-document.querySelector(".grid").appendChild(deviceCard);
+document.querySelectorAll(".clickable").forEach(card=>{
+  card.onclick=()=>{
+    if(card.id==="vulnerabilities"){
+      let html=`<h3>Detailed Vulnerabilities</h3><table border="1" style="width:100%;text-align:left;"><tr><th>Name</th><th>Severity</th><th>System</th><th>Status</th><th>Action</th></tr>`;
+      vulnerabilitiesData.forEach((v,i)=>{
+        html+=`<tr>
+          <td>${v.name}</td>
+          <td>${v.severity}</td>
+          <td>${v.system}</td>
+          <td id="vuln-status-${i}">${v.status}</td>
+          <td><button onclick="markVulnResolved(${i})">Mark Resolved</button></td>
+        </tr>`;
+      });
+      html+=`</table>`;
+      modalBody.innerHTML=html;
+    } else if(card.id==="riskRegister"){
+      let html=`<h3>Risk Register Details</h3><table border="1" style="width:100%;text-align:left;"><tr><th>Risk</th><th>Severity</th><th>Owner</th><th>Status</th><th>Action</th></tr>`;
+      riskData.forEach((r,i)=>{
+        html+=`<tr>
+          <td>${r.risk}</td>
+          <td>${r.severity}</td>
+          <td>${r.owner}</td>
+          <td id="risk-status-${i}">${r.status}</td>
+          <td><button onclick="closeRisk(${i})">Close</button></td>
+        </tr>`;
+      });
+      html+=`</table>`;
+      modalBody.innerHTML=html;
+    } else { modalBody.innerHTML=card.innerHTML; }
+    modal.style.display="block";
+  }

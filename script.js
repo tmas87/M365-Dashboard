@@ -12,14 +12,15 @@ document.addEventListener("DOMContentLoaded", async function(){
   } catch(e){ console.log("Location fetch failed", e);}
   document.getElementById("location").textContent = `Location: ${locText}`;
 
-  // ======== TENANT ========
+  // ======== TENANT INFO CARD WITH ICONS ========
   document.getElementById("tenant").innerHTML = `
     <h3><i class="fas fa-building"></i> Tenant Info</h3>
     <p>tmas87.onmicrosoft.com</p>
     <div class="mini-row">
-      <div class="mini"><i class="fas fa-circle text-green"></i> Active</div>
-      <div class="mini"><i class="fas fa-users"></i> 120 Users</div>
       <div class="mini"><i class="fas fa-server"></i> 4 Services</div>
+      <div class="mini"><i class="fas fa-users"></i> 120 Users</div>
+      <div class="mini"><i class="fas fa-shield-alt"></i> Secure</div>
+      <div class="mini"><i class="fas fa-calendar-check"></i> Last Sync: ${now}</div>
     </div>
   `;
 
@@ -129,7 +130,6 @@ document.addEventListener("DOMContentLoaded", async function(){
     {name:"CVE-2026-005", severity:"High", system:"Server03", status:"Open"}
   ];
 
-  // Count by severity
   const severityCounts = {Critical:0, High:0, Medium:0, Low:0};
   vulnerabilitiesData.forEach(v => { severityCounts[v.severity]++; });
 

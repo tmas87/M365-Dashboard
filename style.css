@@ -1,24 +1,43 @@
-body { font-family: "Segoe UI", sans-serif; margin:0; transition: background 0.3s, color 0.3s; }
-body.light { background:#f3f3f3; color:#222; }
-body.dark { background:#121212; color:#eee; }
-
-.card {
-  border-radius:14px;
-  padding:20px;
-  box-shadow:0 6px 18px rgba(0,0,0,0.12);
-  cursor:pointer;
-  transition: transform 0.25s ease, background 0.3s, color 0.3s;
-  background:inherit;
-  color:inherit;
-  display:flex;
-  flex-direction:column;
-  justify-content:space-between;
+body {
+  font-family: "Segoe UI", sans-serif;
+  margin:0;
+  transition: background 0.3s,color 0.3s;
 }
 
-body.light .card { background:#fff; color:#1b1b1b; }
-body.dark .card { background:#1e1e1e; color:#f5f5f5; }
+body.light {
+  background:#f3f3f3;
+  color:#222;
+}
 
-.card:hover { transform:scale(1.03); }
+body.dark {
+  background:#121212;
+  color:#eee;
+}
+
+header {
+  padding:14px 20px;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  color:#fff;
+  position:sticky;
+  top:0;
+  z-index:10;
+}
+
+.blue-bg { background:#0078d4; }
+
+.theme-toggle {
+  background: rgba(255,255,255,0.15);
+  border:none;
+  border-radius:50%;
+  font-size:1.2rem;
+  padding:10px;
+  cursor:pointer;
+  transition:0.2s;
+}
+
+.theme-toggle:hover { background: rgba(255,255,255,0.3); transform:rotate(15deg); }
 
 .grid {
   display:grid;
@@ -27,64 +46,68 @@ body.dark .card { background:#1e1e1e; color:#f5f5f5; }
   padding:20px;
 }
 
-.chart-container { width:100%; height:120px; }
+.card {
+  background:inherit;
+  border-radius:14px;
+  padding:20px;
+  box-shadow:0 6px 18px rgba(0,0,0,0.12);
+  cursor:pointer;
+  transition:transform 0.25s ease,background 0.3s,color 0.3s;
+}
 
-.mini-info {
+body.light .card { background:#fff; color:#1b1b1b; }
+body.dark .card { background:#1e1e1e; color:#f5f5f5; }
+
+.card:hover { transform:scale(1.03); }
+
+.mini-row {
   display:flex;
-  justify-content:space-around;
+  flex-wrap:wrap;
+  gap:10px;
   margin-top:10px;
+}
+
+.mini {
+  background: rgba(0,0,0,0.05);
+  padding:5px 8px;
+  border-radius:6px;
   font-size:0.85rem;
 }
 
-.mini-info div {
-  text-align:center;
-  padding:6px 10px;
-  border-radius:6px;
-  background: rgba(0,0,0,0.05);
+.text-green { color:#107c10; }
+.text-red { color:#a80000; }
+.text-orange { color:#d83b01; }
+
+.chart-container { max-width:200px; margin-top:10px; }
+
+.modal {
+  display:none;
+  position:fixed;
+  inset:0;
+  background:rgba(0,0,0,0.6);
 }
 
-body.light .mini-info div { background: rgba(0,0,0,0.05); color:#222; }
-body.dark .mini-info div { background: rgba(255,255,255,0.05); color:#eee; }
-
-.compact-header {
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  padding:14px 18px;
-}
-
-.header-left h1 { margin:0; font-size:1.3rem; }
-.header-info { display:flex; gap:10px; flex-wrap:wrap; }
-.tenant, .sync, .location { font-size:0.9rem; opacity:0.9; }
-
-.theme-toggle {
-  background:rgba(255,255,255,0.15);
-  border:none;
-  border-radius:50%;
-  font-size:1.2rem;
-  padding:10px;
-  cursor:pointer;
-  color:white;
-  transition: background 0.2s, transform 0.2s;
-}
-.theme-toggle:hover { background: rgba(255,255,255,0.3); transform: rotate(15deg); }
-
-/* Microsoft colours */
-.blue { border-left:6px solid #0078d4; }
-.green { border-left:6px solid #107c10; }
-.orange { border-left:6px solid #d83b01; }
-.red { border-left:6px solid #a80000; }
-.grey { border-left:6px solid #666; }
-
-/* MODAL */
-.modal { display:none; position:fixed; inset:0; background:rgba(0,0,0,0.6); }
 .modal-content {
-  max-width:420px;
+  max-width:90%;
   margin:10% auto;
   padding:20px;
   border-radius:12px;
+  background:#fff;
+  color:#222;
   position:relative;
+  max-height:80%;
+  overflow-y:auto;
 }
-body.light .modal-content { background:#fff; color:#222; }
+
 body.dark .modal-content { background:#1e1e1e; color:#eee; }
-.modal-close { position:absolute; top:10px; right:14px; font-size:22px; cursor:pointer; }
+
+.modal-close {
+  position:absolute;
+  top:10px;
+  right:14px;
+  font-size:22px;
+  cursor:pointer;
+}
+
+.compact-header h1 { margin:0; font-size:1.3rem; }
+.header-info { display:flex; gap:15px; flex-wrap:wrap; font-size:0.9rem; }

@@ -14,53 +14,66 @@ body.dark {
   color: #eee;
 }
 
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 18px;
+  padding: 20px;
+}
+
 .card {
   background: inherit;
   border-radius: 14px;
-  padding: 20px;
+  padding: 18px;
   box-shadow: 0 6px 18px rgba(0,0,0,0.12);
   cursor: pointer;
   transition: transform 0.25s ease, background 0.3s, color 0.3s;
 }
 
-body.light .card { background: #ffffff; color: #1b1b1b; }
+body.light .card { background: #fff; color: #1b1b1b; }
 body.dark .card { background: #1e1e1e; color: #f5f5f5; }
 
-.card:hover {
-  transform: scale(1.03);
-}
+.card:hover { transform: scale(1.03); }
 
-.header-card {
-  margin: 20px;
-}
+.header-info { display: flex; gap: 12px; flex-wrap: wrap; font-size: 0.9rem; }
 
-.dashboard {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-  gap: 20px;
-  padding: 20px;
-}
-
-.info {
+.compact-header {
   display: flex;
   justify-content: space-between;
+  align-items: center;
+  padding: 12px 18px;
+  background: #0078d4;
+  color: white;
+}
+
+.theme-toggle {
+  background: rgba(255,255,255,0.15);
+  border: none;
+  border-radius: 50%;
+  font-size: 1.2rem;
+  padding: 8px;
+  cursor: pointer;
+  transition: background 0.2s, transform 0.2s;
+}
+.theme-toggle:hover { background: rgba(255,255,255,0.3); transform: rotate(15deg); }
+
+.mini-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
   margin-top: 10px;
-  font-size: 0.9rem;
 }
 
 .mini {
-  background: rgba(255,255,255,0.2);
-  padding: 6px 10px;
-  border-radius: 6px;
+  background: rgba(255,255,255,0.15);
+  padding: 5px 8px;
+  border-radius: 5px;
+  font-size: 0.85rem;
 }
 
-/* Microsoft colours */
-.blue { border-left: 6px solid #0078d4; }
-.green { border-left: 6px solid #107c10; }
-.orange { border-left: 6px solid #d83b01; }
-.red { border-left: 6px solid #a80000; }
+.text-red { color: #a80000; }
+.text-green { color: #107c10; }
 
-/* MODALS */
 .modal {
   display: none;
   position: fixed;
@@ -70,8 +83,8 @@ body.dark .card { background: #1e1e1e; color: #f5f5f5; }
 
 .modal-content {
   max-width: 420px;
-  margin: 10% auto;
-  padding: 20px;
+  margin: 8% auto;
+  padding: 18px;
   border-radius: 12px;
   position: relative;
 }
@@ -79,52 +92,17 @@ body.dark .card { background: #1e1e1e; color: #f5f5f5; }
 body.light .modal-content { background: #fff; color: #222; }
 body.dark .modal-content { background: #1e1e1e; color: #eee; }
 
-.close {
+.modal-close {
   position: absolute;
   top: 10px;
   right: 14px;
   font-size: 22px;
   cursor: pointer;
 }
-/* COMPACT HEADER */
-.compact-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 14px 18px;
-}
 
-.header-left h1 {
-  margin: 0;
-  font-size: 1.3rem;
-}
-
-.tenant {
-  margin: 2px 0 8px;
-  font-size: 0.9rem;
-  opacity: 0.9;
-}
-
-/* HEADER INFO ROW */
-.header-info {
-  display: flex;
-  gap: 10px;
-  flex-wrap: wrap;
-}
-
-/* THEME TOGGLE BUTTON */
-.theme-toggle {
-  background: rgba(255,255,255,0.15);
-  border: none;
-  border-radius: 50%;
-  font-size: 1.2rem;
-  padding: 10px;
-  cursor: pointer;
-  color: white;
-  transition: background 0.2s, transform 0.2s;
-}
-
-.theme-toggle:hover {
-  background: rgba(255,255,255,0.3);
-  transform: rotate(15deg);
+/* Doughnut chart container */
+.chart-container {
+  width: 100%;
+  max-width: 200px;
+  margin: 10px auto;
 }

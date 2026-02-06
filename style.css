@@ -15,7 +15,7 @@ body.dark {
 }
 
 header {
-  padding:14px 20px;
+  padding:12px 20px;
   display:flex;
   justify-content:space-between;
   align-items:center;
@@ -77,6 +77,7 @@ body.dark .card { background:#1e1e1e; color:#f5f5f5; }
 .text-green { color:#107c10; }
 .text-red { color:#a80000; }
 .text-orange { color:#d83b01; }
+.text-purple { color:#6a00ff; }
 
 .chart-container { max-width:200px; margin-top:10px; }
 
